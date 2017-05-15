@@ -1,28 +1,29 @@
 language: ruby
 os: osx
-env: OSX=10.12
+env:
+  matrix:
+  - OSX=10.12
+  global:
+    - HOMEBREW_BINTRAY_USER=cartr
+    - secure: mhojsreJGZHEfOaWHUMRMUkwNgfcNF3lQSWXm4r7xmk46VW3hnUcr5UHxIkX+xdLh/vBw5O3WkXJEB1MKdrmDsqrtlrLzJIiVe81lolSFOrkM08cYdwY71Fx2KCej9enyTHonfVa/y/ZRJKVGHQvBPaGmT2ksyJLA8i8CuV2fOF5KZsJSphSwBv9J+K2odNbjnlvXyVm97fFxbC9PSApLN5jj6shDNjFSrCS2Pv9g8cq33rDI2EG5R9sqzAA+GCV+QEUIeVaXgUAPYCUaA3CEMexlIuguReuaraw7iT/hjnJf+eIC/4BCNUWWRKv/fYtXa340XRm58rMn5yb/uj/aFVT+vAxxLvytdvrYCX3ZZwf26PUQKSYsXsyDy/WCxVyTgSD/QATUzpYN+uXfVE0nPZZIh/dfCQU/3qcGXkbh/5WZWHu/V0BHIgbh1xHJ+MWERMLb+NM3DTjAA8/4rweIfrWeBfWBsY1Or+SwvIiC6TeXGRV5QoANoxmYOz26dRKAD/r4EvwEJvqfjmJRaJiqRZdDYl4Ec0QYBe/85B6NC0Ah7Y3PoD+bkX6ZykSpjtIPdGkUDujw+1QYirHrYRL4vgdFiPCczXfWwJ9dp/Mo2akaNokU3FDeau/d2BDbOLoN/DjlKXw+s20pg+/VZsuNMwrMWWNxXmRR2JPEWTBy/E=
 osx_image: xcode8.3
 rvm: system
-
 before_install:
-  - export TRAVIS_COMMIT="$(git rev-parse --verify -q HEAD)"
-  - if [ -f ".git/shallow" ]; then
-      travis_retry git fetch --unshallow;
-    fi
-  - HOMEBREW_REPOSITORY="$(brew --repo)"
-  - sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"
-  - git -C "$HOMEBREW_REPOSITORY" reset --hard origin/master
-  - brew update || brew update
-  - HOMEBREW_TAP_DIR="$(brew --repo "$TRAVIS_REPO_SLUG")"
-  - mkdir -p "$HOMEBREW_TAP_DIR"
-  - rm -rf "$HOMEBREW_TAP_DIR"
-  - ln -s "$PWD" "$HOMEBREW_TAP_DIR"
-  - export HOMEBREW_DEVELOPER="1"
-  - ulimit -n 1024
-
+- export TRAVIS_COMMIT="$(git rev-parse --verify -q HEAD)"
+- if [ -f ".git/shallow" ]; then travis_retry git fetch --unshallow; fi
+- HOMEBREW_REPOSITORY="$(brew --repo)"
+- sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"
+- git -C "$HOMEBREW_REPOSITORY" reset --hard origin/master
+- brew update || brew update
+- HOMEBREW_TAP_DIR="$(brew --repo "$TRAVIS_REPO_SLUG")"
+- mkdir -p "$HOMEBREW_TAP_DIR"
+- rm -rf "$HOMEBREW_TAP_DIR"
+- ln -s "$PWD" "$HOMEBREW_TAP_DIR"
+- export HOMEBREW_DEVELOPER="1"
+- ulimit -n 1024
 script:
-  - brew test-bot
-
+- brew test-bot
+- brew test-bot --ci-upload
 notifications:
   email:
     on_success: never
